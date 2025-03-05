@@ -1,0 +1,110 @@
+name: catis
+
+services:
+  catis:
+    container_name: catis
+    image: upmind/catis:24.1.1
+    restart: unless-stopped
+    ports:
+      - 9000:9000
+    environment:
+      APP_CONTEXT: /catis
+      MONGODB_URI: mongodb://mongo:27017/catis
+      PLAY_APP_SECRET:
+      AUTH_SIGNER_KEY:
+      AUTH_CRYPTER_KEY:
+    volumes:
+      - ./conf/prod-sandbox.conf:/app/conf/prod-sandbox.conf:ro
+      - ./conf/prod-sandbox-all.conf:/app/conf/application.conf:ro
+#    deploy:
+#      resources:
+#        limits:
+#          memory: 256MB
+#        reservations:
+#          memory: 128MB
+#    memswap_limit: 1G
+
+  catis_bj:
+    container_name: catis_bj
+    image: upmind/catis:24.1.1-bj
+    restart: unless-stopped
+    ports:
+      - 9001:9000
+    environment:
+      APP_CONTEXT: /bj/catis
+      MONGODB_URI: mongodb://mongo:27017/catis_bj
+      PLAY_APP_SECRET:
+      AUTH_SIGNER_KEY:
+      AUTH_CRYPTER_KEY:
+    volumes:
+        - ./conf/prod-sandbox.conf:/app/conf/application.conf:ro
+#    deploy:
+#      resources:
+#        limits:
+#          memory: 256MB
+#        reservations:
+#          memory: 128MB
+#    memswap_limit: 1G
+
+  catis_cu:
+    container_name: catis_cu
+    image: upmind/catis:24.1.1
+    restart: unless-stopped
+    ports:
+      - 9002:9000
+    environment:
+      APP_CONTEXT: /cu/catis
+      MONGODB_URI: mongodb://mongo:27017/catis_cu
+      PLAY_APP_SECRET:
+      AUTH_SIGNER_KEY:
+      AUTH_CRYPTER_KEY:
+    volumes:
+      - ./conf/prod-sandbox.conf:/app/conf/application.conf:ro
+#    deploy:
+#     resources:
+#        limits:
+#          memory: 256MB
+#        reservations:
+#          memory: 128MB
+#    memswap_limit: 1G
+
+#  nginx:
+#    container_name: nginx
+#    image: nginx:latest
+#    restart: unless-stopped
+#    ports:
+#      - 80:80
+
+  proxy:
+    container_name: proxy
+    image: caddy:latest
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+
+  mongo:
+    container_name: mongodb
+    image: mongodb/mongodb-community-server:7.0.14-ubuntu2204
+    restart: unless-stopped
+    #environment:
+      #MONGO_INITDB_ROOT_USERNAME: root
+      #MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - 127.0.0.1:27017:27017
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  default:
+    name: sandbox
+    external: true
