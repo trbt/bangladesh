@@ -15,6 +15,8 @@ services:
     volumes:
       - ./application.conf:/app/conf/application.conf:ro
       - ./logs:/app/logs
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
   proxy:
     image: caddy:latest
