@@ -7,6 +7,7 @@ services:
     ports:
       - 9000:9000
     environment:
+      TZ: "Asia/Dhaka"
       # APP_CONTEXT: /catis
       MONGODB_URI: mongodb://mongo:27017/catis
       PLAY_APP_SECRET:
@@ -15,9 +16,7 @@ services:
     volumes:
       - ./application.conf:/app/conf/application.conf:ro
       - ./logs:/app/logs
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-
+      
   proxy:
     image: caddy:latest
     restart: unless-stopped
